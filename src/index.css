@@ -115,8 +115,8 @@ code {
 
 .modal_text {
   font-size: xx-large;
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   background-color: white;
   display: flex;
   justify-content: center;
@@ -137,9 +137,17 @@ code {
   font-weight: bold;
   color: brown;
   cursor: pointer;
+  display: flex;
+}
+
+.btn_icon {
+  height: 30px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .modal_button {
   width: fit-content;
   align-self: flex-end;
+  align-items: center;
 }

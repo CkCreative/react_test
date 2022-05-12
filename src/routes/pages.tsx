@@ -6,34 +6,45 @@ import { useNavigate, Outlet, useParams } from "react-router-dom";
 import { GET_BOOK_DATA } from "../apollo";
 import { getMappedSentence } from "../utils/mapper";
 import { BookData } from "../types";
+import PointsIcon from "../components/PointsIcon";
 
 export function Pages() {
   const { loading, data } = useQuery<BookData>(GET_BOOK_DATA);
+
   const [content, setContent] = useState<ReactNode>();
   const [contentRight, setContentRight] = useState<ReactNode>();
   const [open, setOpen] = useState<boolean>(true);
 
   let { page } = useParams();
+  let navigate = useNavigate();
+
   let idx = 0;
   if (page) {
     idx = parseInt(page);
   }
 
-  let navigate = useNavigate();
-
   useEffect(() => {
     if (data) {
+      // proceed to manipulate content only when done loading data
       console.log(data.book.pages.length);
       let obj = { ...data };
-      let contentLeft = getMappedSentence(obj.book.pages[idx]);
-      let contentRight = getMappedSentence(obj.book.pages[idx + 1]);
 
+      let contentLeft = getMappedSentence(obj.book.pages[idx]); // for left page
+      let contentRight = getMappedSentence(obj.book.pages[idx + 1]); // for right page
+
+      /*
+       * Set content for the left page
+       */
       setContent(
         <div
           onClick={loadToken(idx)}
           dangerouslySetInnerHTML={{ __html: contentLeft.sentence }}
         ></div>
       );
+
+      /*
+       * Set content for the right page
+       */
       setContentRight(
         <div
           onClick={loadToken(idx + 1)}
@@ -44,6 +55,12 @@ export function Pages() {
   }, [data, page]);
 
   const loadToken = (index: any) => (e: any) => {
+    /*
+     * When a user clicks a word, this function is called.
+     * It takes the index of the current page to extract page content
+     * Searches the tokens to find one which equals the ID of the target element
+     * If it finds the clicked word, a new view displaying the token for the clicked word is opened
+     */
     if (data) {
       let tokens = data.book.pages[index].tokens;
       if (e.target.id) {
@@ -59,6 +76,9 @@ export function Pages() {
   };
 
   const next = () => (e: any) => {
+    /*
+     * Open next page set as long as the end page is not yet reached
+     */
     if (data && idx < data?.book.pages.length) {
       console.log(idx);
       navigate(`/${idx + 2}/`);
@@ -66,6 +86,9 @@ export function Pages() {
   };
 
   const previous = () => (e: any) => {
+    /*
+     * Open previous set of pages if current page set is above the first set
+     */
     if (data && idx > 2) {
       navigate(`/${idx - 2}/`);
     }
@@ -81,21 +104,7 @@ export function Pages() {
             <div className="top_nav">
               <span className="book_title">{data && data.book.title}</span>
               <span className="points">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="points_icon"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                  />
-                </svg>{" "}
-                20
+                <PointsIcon></PointsIcon> 20
               </span>
             </div>
             <div className="content">
