@@ -1,14 +1,15 @@
-import { ApolloProvider } from "@apollo/client";
-
-import { Book, client } from "./apollo";
-import "./App.css";
+import { useEffect } from "react";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 function App() {
-  return (
-    <ApolloProvider client={client}>
-      <Book></Book>
-    </ApolloProvider>
-  );
+  let navigate = useNavigate();
+  let { page } = useParams();
+
+  useEffect(() => {
+    if (!page) navigate("/1/");
+  }, [page]);
+
+  return <Outlet />;
 }
 
 export default App;
