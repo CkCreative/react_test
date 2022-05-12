@@ -13,7 +13,7 @@ export function Pages() {
 
   const [content, setContent] = useState<ReactNode>();
   const [contentRight, setContentRight] = useState<ReactNode>();
-  const [open, setOpen] = useState<boolean>(true);
+  const [modalContext, setModalContext] = useState<Object>({});
 
   let { page } = useParams();
   let navigate = useNavigate();
@@ -68,7 +68,10 @@ export function Pages() {
           (a) => a.position[0] === parseInt(e.target.id)
         );
         if (item) {
-          setOpen(true);
+          setModalContext({
+            open: true,
+            token: item?.value,
+          });
           navigate(`/${idx}/${item?.value}`);
         }
       }
@@ -120,7 +123,7 @@ export function Pages() {
               </button>
             </div>
           </div>
-          <Outlet context={[open, setOpen]} />
+          <Outlet context={[modalContext, setModalContext]} />
         </>
       )}
     </div>
